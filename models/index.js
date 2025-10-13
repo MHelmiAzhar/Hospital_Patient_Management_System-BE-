@@ -6,7 +6,6 @@ const Sequelize = require('sequelize');
 const process = require('process');
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-// Support config as JS module that reads environment variables (config/config.js)
 let config = require(__dirname + '/../config/config.js');
 config = config[env] || config;
 const db = {};
