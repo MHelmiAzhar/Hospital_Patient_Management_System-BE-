@@ -1,0 +1,42 @@
+# Node.js
+node_modules/
+
+# Build output
+dist/
+build/
+out/
+
+# Logs
+logs/
+*.log
+debug.log*
+
+
+# Environment variables
+.env
+.env.*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+!.env.example
+
+# npm pack
+*.tgz
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Testing
+jest-junit.xml
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
