@@ -1,5 +1,4 @@
 const Joi = require('joi');
-const { search } = require('../../../routes/userRoutes');
 
 const signUpPatientSchema = Joi.object({
   name: Joi.string().min(2).max(100).required(),
@@ -22,7 +21,7 @@ const updatePatientSchema = Joi.object({
 
 const loginSchema = Joi.object({
   email: Joi.string().email().required(),
-  password: Joi.string().min(6).required(),
+  password: Joi.string().required(),
 });
 
 const createDoctorSchema = Joi.object({
@@ -30,14 +29,12 @@ const createDoctorSchema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().min(6).required(),
   specialization: Joi.string().max(100).required(),
-  schedule: Joi.string().max(255).required(),
 });
 
 const updateDoctorSchema = Joi.object({
   name: Joi.string().min(2).max(100).required(),
   email: Joi.string().email().required(),
   specialization: Joi.string().max(100).required(),
-  schedule: Joi.string().max(255).required(),
 });
 
 const queryAllUsersSchema = Joi.object({

@@ -25,7 +25,15 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
       });
-    }
+      User.hasMany(models.Appointment, {
+        foreignKey: 'patient_user_id',
+        as: 'appointmentsAsPatient',
+      });
+      User.hasMany(models.Appointment, {
+        foreignKey: 'doctor_user_id',
+        as: 'appointmentsAsDoctor',
+      });
+        }
   }
   User.init({
     user_id: {
@@ -37,7 +45,10 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     email: DataTypes.STRING,
     password: DataTypes.STRING,
-    role: DataTypes.ENUM('ADMIN', 'DOCTOR', 'PATIENT')
+    role: { 
+      type: DataTypes.ENUM('ADMIN', 'DOCTOR', 'PATIENT'),
+      defaultValue: 'PATIENT'
+     }
 
   }, {
     sequelize,

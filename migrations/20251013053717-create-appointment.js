@@ -9,17 +9,29 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      patient_id: {
-        type: Sequelize.INTEGER
+      patient_user_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'tb_users',
+          key: 'user_id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
-      doctor_id: {
-        type: Sequelize.INTEGER
+      doctor_user_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'tb_users',
+          key: 'user_id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
       date: {
         type: Sequelize.DATE
       },
       status: {
-        type: Sequelize.ENUM('PENDING', 'APPROVED', 'REJECTED', 'COMPLETED'),
+        type: Sequelize.ENUM('SCHEDULED', 'APPROVED', 'REJECTED', 'COMPLETED'),
       },
       createdAt: {
         allowNull: false,

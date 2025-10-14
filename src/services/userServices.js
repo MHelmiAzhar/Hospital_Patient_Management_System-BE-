@@ -84,7 +84,7 @@ const loginUser = async (email, password) => {
     };
 }
 
-const createDoctor = async (name, email, password, specialization, schedule) => {
+const createDoctor = async (name, email, password, specialization, ) => {
     const t = await sequelize.transaction();
     try {
         //Check if email already exists
@@ -100,7 +100,7 @@ const createDoctor = async (name, email, password, specialization, schedule) => 
         // pass hashed password under the `password` key as repository expects
         const user = await userRepositories.createUser({ name, email, password: hashedPassword, role: 'DOCTOR' }, t);
 
-        const doctor = await userRepositories.createDoctor({ specialization, schedule, user_id: user.user_id }, t);
+        const doctor = await userRepositories.createDoctor({ specialization, user_id: user.user_id }, t);
         
         await t.commit();
         return {
@@ -109,7 +109,6 @@ const createDoctor = async (name, email, password, specialization, schedule) => 
             email: user.email,
             role: user.role,
             specialization: doctor.specialization,
-            schedule: doctor.schedule
         };
         
     } catch (error) {
@@ -122,7 +121,7 @@ const createDoctor = async (name, email, password, specialization, schedule) => 
 }
 
 
-const updateDoctor = async (user_id, { name, email, specialization, schedule }) => {
+const updateDoctor = async (user_id, { name, email, specialization,  }) => {
     const t = await sequelize.transaction();
     try {
         const doctor = await userRepositories.checkEmailExists(email);
@@ -131,7 +130,7 @@ const updateDoctor = async (user_id, { name, email, specialization, schedule }) 
         // Update user information
         await userRepositories.updateUser(user_id, { name, email }, t);
         // Update doctor information
-        await userRepositories.updateDoctor(user_id, { specialization, schedule }, t);
+        await userRepositories.updateDoctor(user_id, { specialization }, t);
 
         await t.commit();
         return true
@@ -238,7 +237,6 @@ const getPaginatedUsers = async ({ page = 1, size = 10, search, role }) => {
         } else if (user.role === 'DOCTOR' && user.doctor) {
             Object.assign(userData, {
                 specialization: user.doctor.specialization,
-                schedule: user.doctor.schedule,
             });
         }
         return userData;
@@ -250,6 +248,35 @@ const getPaginatedUsers = async ({ page = 1, size = 10, search, role }) => {
     };
 };
 
+const getUserById = async (user_id) => {
+    const user = await userRepositories.getUserById(user_id);
+    if (!user) {
+        throw new ClientError('User not found');
+    }
+
+    const userData = {
+        user_id: user.user_id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+    };
+
+    if ((user.role === 'PATIENT' && user.patient)) {
+        Object.assign(userData, {
+            address: user.patient.address,
+            birth_date: user.patient.birth_date,
+            gender: user.patient.gender,
+            contact_number: user.patient.contact_number,
+        });
+    } else if (user.role === 'DOCTOR' && user.doctor) {
+        Object.assign(userData, {
+            specialization: user.doctor.specialization,
+        });
+    }
+
+    return userData;
+}
+
 module.exports = {
     signUpPatient,
     loginUser,
@@ -258,5 +285,6 @@ module.exports = {
     updatePatient,
     deleteDoctor,
     deletePatient,
-    getPaginatedUsers
+    getPaginatedUsers,
+    getUserById
 };

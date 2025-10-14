@@ -30,9 +30,9 @@ const loginUser = async (req, res) => {
 
 const createDoctor = async (req, res) => {
     try {
-        const { name, email, password, specialization, schedule } = await dtoValidation(req.body, createDoctorSchema);
+        const { name, email, password, specialization } = await dtoValidation(req.body, createDoctorSchema);
 
-        const user = await userServices.createDoctor(name, email, password, specialization, schedule);
+        const user = await userServices.createDoctor(name, email, password, specialization);
 
         return resSuccessHandler(res, user, 'Doctor created successfully', 201);
     } catch (error) {
@@ -48,8 +48,8 @@ const updateDoctor = async (req, res) => {
         if (!user_id) throw new ClientError('Parameter ID is required');
         if (userRole !== 'ADMIN' && userId !== Number(user_id)) throw new ClientError('You are not authorized to update this doctor');
 
-        const { name, email, specialization, schedule } = await dtoValidation(req.body, updateDoctorSchema);
-        await userServices.updateDoctor(user_id, { name, email, specialization, schedule });
+        const { name, email, specialization } = await dtoValidation(req.body, updateDoctorSchema);
+        await userServices.updateDoctor(user_id, { name, email, specialization });
 
         return resSuccessHandler(res, null, 'Doctor updated successfully', 200);
     } catch (error) {
@@ -112,6 +112,17 @@ const getAllUsers = async (req, res) => {
         resErrorHandler(res, error);
     }
 }
+const getUserById = async (req, res) => {
+    try {
+        const { user_id } = req.params;
+        if (!user_id) throw new ClientError('Parameter ID is required');
+
+        const user = await userServices.getUserById(user_id);
+        return resSuccessHandler(res, user, 'User retrieved successfully', 200);
+    } catch (error) {
+        resErrorHandler(res, error);
+    }
+}
 module.exports = {
     signUpPatient,
     loginUser,
@@ -120,5 +131,6 @@ module.exports = {
     deleteDoctor,
     updatePatient,
     deletePatient,
-    getAllUsers
+    getAllUsers,
+    getUserById
 };

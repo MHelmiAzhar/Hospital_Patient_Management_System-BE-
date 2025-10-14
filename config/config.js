@@ -1,6 +1,6 @@
-if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config();
-}
+require("dotenv").config();
+// if (process.env.NODE_ENV !== "production") {
+// }
 module.exports = {
   development: {
     username: process.env.DB_USERNAME,
@@ -8,7 +8,7 @@ module.exports = {
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
-    dialect: process.env.DB_DIALECT,
+    dialect: 'mysql',
     dialectModule: require("mysql2"),
   },
   test: {
@@ -17,7 +17,7 @@ module.exports = {
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
-    dialect: process.env.DB_DIALECT,
+    dialect: 'mysql',
     dialectModule: require("mysql2"),
   },
   production: {
@@ -25,6 +25,6 @@ module.exports = {
     password: null,
     database: "database_production",
     host: "127.0.0.1",
-    dialect: process.env.DB_DIALECT,
+    dialect: 'mysql',
   },
 };

@@ -18,13 +18,6 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
       });
-      Doctor.hasMany(models.Appointment, {
-        foreignKey: 'doctor_id',
-        as: 'appointments',
-        sourceKey: 'doctor_id',
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
-      });
     }
   }
   Doctor.init({
@@ -35,7 +28,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     },
     specialization: DataTypes.STRING,
-    schedule: DataTypes.STRING,
     user_id: DataTypes.INTEGER
   }, {
     sequelize,

@@ -10,27 +10,19 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
-      Appointment.belongsTo(models.Patient, {
-        foreignKey: 'patient_id',
+      Appointment.belongsTo(models.User, {
+        foreignKey: 'patient_user_id',
         as: 'patient',
-        targetKey: 'patient_id',
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
       });
-      Appointment.belongsTo(models.Doctor, {
-        foreignKey: 'doctor_id',
+
+      Appointment.belongsTo(models.User, {
+        foreignKey: 'doctor_user_id',
         as: 'doctor',
-        targetKey: 'doctor_id',
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
       });
+
       Appointment.hasOne(models.Examination, {
         foreignKey: 'appointment_id',
         as: 'examination',
-        sourceKey: 'appointment_id',
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
       });
     }
   }
@@ -41,10 +33,10 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.INTEGER
     },
-    patient_id: DataTypes.INTEGER,
-    doctor_id: DataTypes.INTEGER,
+    patient_user_id: DataTypes.INTEGER,
+    doctor_user_id: DataTypes.INTEGER,
     date: DataTypes.DATE,
-    status: DataTypes.ENUM('PENDING', 'APPROVED', 'REJECTED', 'COMPLETED')
+    status: DataTypes.ENUM('SCHEDULED', 'APPROVED', 'REJECTED', 'COMPLETED')
   }, {
     sequelize,
     modelName: 'Appointment',

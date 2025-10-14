@@ -10,7 +10,13 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       appointment_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'tb_appointments',
+          key: 'appointment_id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       diagnosis: {
         type: Sequelize.STRING

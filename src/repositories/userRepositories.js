@@ -9,7 +9,10 @@ const checkEmailExists = async (email) => {
 
 const getUserById = async (user_id) => {
     return await User.findOne(
-        { where: { user_id } }, 
+        { where: { user_id }, include: [
+            { model: Patient, as: 'patient' },
+            { model: Doctor, as: 'doctor' }
+        ] }
     );
 }
 
@@ -27,9 +30,9 @@ const createPatient = async ({address, birth_date, gender, contact_number, user_
     );
 }
 
-const createDoctor = async ({specialization, schedule, user_id}, t) => {
+const createDoctor = async ({specialization, user_id}, t) => {
     return await Doctor.create(
-        { specialization, schedule, user_id },
+        { specialization, user_id },
         { transaction: t }
     );
 }
@@ -41,9 +44,9 @@ const updateUser = async (user_id, { name, email }, t) => {
     );
 }
 
-const updateDoctor = async (user_id, { specialization, schedule }, t) => {
+const updateDoctor = async (user_id, { specialization }, t) => {
     return await Doctor.update(
-        { specialization, schedule },
+        { specialization },
         { where: { user_id }, transaction: t }
     );
 }

@@ -18,13 +18,6 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
       });
-      Patient.hasMany(models.Appointment, {
-        foreignKey: 'patient_id',
-        as: 'appointments',
-        sourceKey: 'patient_id',
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
-      });
     }
   }
   Patient.init({
