@@ -12,6 +12,12 @@ const updateAppointmentSchema = Joi.object({
     date: Joi.date().iso().required(),
 });
 
+const updateAppointmentAdminSchema = Joi.object({
+    doctor_user_id: Joi.number().integer().required(),
+    date: Joi.date().iso().required(),
+    status: Joi.string().valid('SCHEDULED','APPROVED', 'REJECTED', 'COMPLETED').optional().allow(''),
+});
+
 const updateAppointmentStatusSchema = Joi.object({
   status: Joi.string().valid('SCHEDULED','APPROVED', 'REJECTED', 'COMPLETED').required(),
 });
@@ -28,5 +34,6 @@ module.exports = {
   createAppointmentSchema,
   updateAppointmentSchema,
   updateAppointmentStatusSchema,
-  queryParamSchema
+  queryParamSchema,
+  updateAppointmentAdminSchema
 };

@@ -43,6 +43,11 @@ const queryAllUsersSchema = Joi.object({
   search: Joi.string().max(100).allow(''),
   role: Joi.string().valid('DOCTOR', 'PATIENT'),
 });
+const queryAllDoctorsSchema = Joi.object({
+  page: Joi.number().integer().min(1).default(1),
+  size: Joi.number().integer().min(1).max(100).default(10),
+  search: Joi.string().max(100).allow(''),
+});
 
 
 module.exports = { 
@@ -51,5 +56,6 @@ module.exports = {
   loginSchema, 
   createDoctorSchema, 
   updateDoctorSchema,
-  queryAllUsersSchema
+  queryAllUsersSchema,
+  queryAllDoctorsSchema
 }

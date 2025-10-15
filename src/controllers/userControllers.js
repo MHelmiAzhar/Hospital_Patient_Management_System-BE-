@@ -1,7 +1,7 @@
 const ClientError = require("../commons/exceptions/ClientError");
 const { resErrorHandler, resSuccessHandler } = require("../commons/exceptions/resHandler");
 const dtoValidation = require("../commons/helper/dtoValidation");
-const { signUpPatientSchema, loginSchema, createDoctorSchema, updateDoctorSchema, updatePatientSchema, queryAllUsersSchema } = require("../commons/helper/schemas/user");
+const { signUpPatientSchema, loginSchema, createDoctorSchema, updateDoctorSchema, updatePatientSchema, queryAllUsersSchema, queryAllDoctorsSchema } = require("../commons/helper/schemas/user");
 const userServices = require("../services/userServices");
 
 const signUpPatient = async (req, res) => {
@@ -112,6 +112,15 @@ const getAllUsers = async (req, res) => {
         resErrorHandler(res, error);
     }
 }
+const getAllDoctors = async (req, res) => {
+    try {
+        const { page, size, search } = await dtoValidation(req.query, queryAllDoctorsSchema);
+        const users = await userServices.getPaginatedUsers({ page, size, search, role: "DOCTOR" });
+        return resSuccessHandler(res, users, 'Doctors retrieved successfully', 200);
+    } catch (error) {
+        resErrorHandler(res, error);
+    }
+}
 const getUserById = async (req, res) => {
     try {
         const { user_id } = req.params;
@@ -132,5 +141,6 @@ module.exports = {
     updatePatient,
     deletePatient,
     getAllUsers,
-    getUserById
+    getUserById,
+    getAllDoctors
 };

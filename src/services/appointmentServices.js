@@ -61,6 +61,29 @@ const updateAppointment = async ({ appointment_id, patient_user_id, doctor_user_
 
     return newAppointment;
 };
+const updateAppointmentByAdmin = async ({ appointment_id, doctor_user_id, date, status }) => {
+    // Check Appointment
+    const appointment = await appointmentRepositories.getAppointmentById(appointment_id);
+    if (!appointment) {
+        throw new NotFoundError('Appointment not found');
+    }
+  
+    // Check Doctor
+    const doctor = await userRepositories.getUserById(doctor_user_id);
+    if (!doctor || doctor.role !== 'DOCTOR') {
+        throw new NotFoundError('Doctor not found');
+    }
+
+
+    const newAppointment = await appointmentRepositories.updateAppointment({
+        appointment_id,
+        doctor_user_id,
+        date,
+        status,
+    });
+
+    return newAppointment;
+};
 
 const getAppointments = async ({ page = 1, size = 10, role, userId, date, status, appointment_id }) => {
   const pageNum = parseInt(page, 10);
@@ -121,4 +144,5 @@ module.exports = {
   getAppointments,
   updateAppointmentStatus,
   deleteAppointment,
+  updateAppointmentByAdmin
 };

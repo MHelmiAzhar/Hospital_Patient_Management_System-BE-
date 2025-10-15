@@ -1,4 +1,4 @@
-const { createAppointmentSchema, updateAppointmentStatusSchema, updateAppointmentSchema, queryParamSchema } = require('../commons/helper/schemas/appointment');
+const { createAppointmentSchema, updateAppointmentStatusSchema, updateAppointmentSchema, queryParamSchema, updateAppointmentAdminSchema } = require('../commons/helper/schemas/appointment');
 const { resSuccessHandler, resErrorHandler } = require('../commons/exceptions/resHandler');
 const appointmentServices = require('../services/appointmentServices');
 const dtoValidation = require('../commons/helper/dtoValidation');
@@ -16,13 +16,13 @@ const createAppointment = async (req, res, next) => {
         const nowUTC = new Date();
         const nowWIB = new Date(nowUTC.getTime() + 7 * 60 * 60 * 1000);
 
-        const appointmentDate = new Date(date);
+        const appointmentDate = new Date(date.getTime() + 7 * 60 * 60 * 1000);
 
         if (appointmentDate <= nowWIB) {
             throw new ClientError('Date must be greater than now (WIB)');
         }
 
-        const appointment = await appointmentServices.createAppointment({ patient_user_id, doctor_user_id, date });
+        const appointment = await appointmentServices.createAppointment({ patient_user_id, doctor_user_id, date:appointmentDate });
 
         return resSuccessHandler(res, appointment, 'Appointment created successfully', 201);
     } catch (error) {
@@ -36,7 +36,7 @@ const updateAppointment = async (req, res, next) => {
         const { id: appointment_id } = req.params;
         if (!appointment_id) throw new ClientError('Parameter ID is required');
 
-        const { doctor_user_id, date } = await dtoValidation(req.body, updateAppointmentSchema);
+        const { doctor_user_id, date, status } = await dtoValidation(req.body, updateAppointmentSchema);
 
         // Validasi: date must be greater than now (WIB)
         if (!date) {
@@ -46,13 +46,41 @@ const updateAppointment = async (req, res, next) => {
         const nowUTC = new Date();
         const nowWIB = new Date(nowUTC.getTime() + 7 * 60 * 60 * 1000);
 
-        const appointmentDate = new Date(date);
+         const appointmentDate = new Date(date.getTime() + 7 * 60 * 60 * 1000);
 
         if (appointmentDate <= nowWIB) {
             throw new ClientError('Date must be greater than now (WIB)');
         }
 
-        const appointment = await appointmentServices.updateAppointment({ appointment_id, patient_user_id, doctor_user_id, date, role });
+        const appointment = await appointmentServices.updateAppointment({ appointment_id, patient_user_id, doctor_user_id, date: appointmentDate, role, status });
+
+        return resSuccessHandler(res, appointment, 'Appointment updated successfully', 200);
+    } catch (error) {
+        return resErrorHandler(res, error);
+    }
+};
+const updateAppointmentAdmin = async (req, res, next) => {
+    try {
+        const { id: appointment_id } = req.params;
+        if (!appointment_id) throw new ClientError('Parameter ID is required');
+
+        const { doctor_user_id, date, status } = await dtoValidation(req.body, updateAppointmentAdminSchema);
+
+        // Validasi: date must be greater than now (WIB)
+        if (!date) {
+            throw new ClientError('Date is required');
+        }
+
+        const nowUTC = new Date();
+        const nowWIB = new Date(nowUTC.getTime() + 7 * 60 * 60 * 1000);
+
+         const appointmentDate = new Date(date.getTime() + 7 * 60 * 60 * 1000);
+
+        if (appointmentDate <= nowWIB) {
+            throw new ClientError('Date must be greater than now (WIB)');
+        }
+
+        const appointment = await appointmentServices.updateAppointmentByAdmin({ appointment_id, doctor_user_id, date: appointmentDate, status });
 
         return resSuccessHandler(res, appointment, 'Appointment updated successfully', 200);
     } catch (error) {
@@ -100,4 +128,5 @@ module.exports = {
     getAppointments,
     updateAppointmentStatus,
     deleteAppointment,
+    updateAppointmentAdmin
 };

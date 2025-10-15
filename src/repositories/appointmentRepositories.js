@@ -1,4 +1,4 @@
-const { Appointment, Patient, Doctor, User, Examination } = require('../../models');
+const { Appointment, User  } = require('../../models');
 const { Op } = require('sequelize');
 
 const createAppointment = async ({ patient_user_id, doctor_user_id, date, status }) => {
@@ -6,12 +6,7 @@ const createAppointment = async ({ patient_user_id, doctor_user_id, date, status
 };
 
 const getAppointmentById = async (appointment_id) => {
-    return await Appointment.findOne({ where: { appointment_id }, 
-        include: [{ 
-            model: Examination, as: 'examination',
-            attributes: ['examination_id', 'diagnosis', 'treatment', 'notes'] }
-        ]}
-    );
+    return await Appointment.findOne({ where: { appointment_id }});
 }
 
 const getAllAppointments = async ({ limit, offset, role, userId, date, status, appointment_id }) => {
@@ -61,7 +56,6 @@ const getAllAppointments = async ({ limit, offset, role, userId, date, status, a
                 as: 'doctor',
                 attributes: ['user_id', 'name', 'email', 'role'],
             },
-            { model: Examination, as: 'examination', attributes: ['examination_id', 'diagnosis', 'treatment', 'notes'] }
         ],
         distinct: true,
     });
