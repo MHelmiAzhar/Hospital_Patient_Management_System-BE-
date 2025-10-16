@@ -1,4 +1,4 @@
-const { Appointment, User  } = require('../../models');
+const { Appointment, User, Doctor } = require('../../models');
 const { Op } = require('sequelize');
 
 const createAppointment = async ({ patient_user_id, doctor_user_id, date, status }) => {
@@ -55,6 +55,9 @@ const getAllAppointments = async ({ limit, offset, role, userId, date, status, a
                 model: User,
                 as: 'doctor',
                 attributes: ['user_id', 'name', 'email', 'role'],
+                include: [{
+                    model: Doctor, as: 'doctor', attributes: ['specialization'],
+                }]
             },
         ],
         distinct: true,
